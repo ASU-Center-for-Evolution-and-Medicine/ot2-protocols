@@ -1,0 +1,1 @@
+powershell.exe -Command "& 'C:\ProgramData\Miniconda3\shell\condabin\conda-hook.ps1' ; conda activate 'C:\ProgramData\Miniconda3' ; conda activate ot2 ; python 'C:\Users\svcsibio\PATH\template_gui.py' >> C:\PATH\windows_start.log 2>&1%   
