@@ -157,7 +157,7 @@ def generate_button_click():
         error_text += "\nOutput Folder path does not exist"
 
     # check that file name provided could be used to create valid file path # TODO: figure out how to do this
-    output_file_name = (file_name_text_entry.get()).strip()
+    output_file_name = (file_name_text_entry.get()).strip() + str(".py")
     
 
     # Decide whether or not to generate protocol 

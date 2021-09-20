@@ -8,6 +8,13 @@ DIRECTIONS ------------------------------------------------
 
 
 
+Simulate your protocol with opentrons simulator
+...on windows 
+    opentrons_simulate.exe <path to protocol file>
+
+... on mac 
+    opentrons_simulate <path to protocol file> 
+
 
 ENVIRONMENT SETUP -----------------------------------------
 
@@ -36,4 +43,5 @@ conda list
 You should be good to go now :) 
 
 ----------------------------------------------------------------
+
 
