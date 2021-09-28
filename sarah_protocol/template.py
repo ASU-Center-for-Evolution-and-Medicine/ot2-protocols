@@ -7,8 +7,9 @@ from opentrons import protocol_api, simulate, execute
 
 
 # HELPER METHODS ------------------------------------------------------------------
-def write_protocol(protocol_path, wells, volumes): 
-    current_file_path = os.path.abspath("template.py")
+def write_protocol(protocol_path, wells, volumes, destinations): 
+    #current_file_path = os.path.abspath("template.py")   # TODO: For some reason this downs't work on mac 
+    current_file_path = "/Users/cstone/Desktop/OT-2/ot2-protocols/sarah_protocol/template.py"
 
     try: 
         with open(current_file_path, 'r') as open_this: 
@@ -24,10 +25,12 @@ def write_protocol(protocol_path, wells, volumes):
                     if contents_this[i].startswith("### TD"):
                         open_that.write(f"\nsource_wells = {str(wells)}")
                         open_that.write(f"\nsource_volumes = {str(volumes)}\n")
+                        open_that.write(f"\nsource_destinations = {str(destinations)}\n")
+
         
         return(f"Protocol created = {protocol_path} ")
     except: 
-        return("Error: Could not write to protocol file")
+        return(f"Error: Could not write to protocol file\n{current_file_path}\n{protocol_path}")
 
 # MAIN METHOD --------------------------------------------------------------------
 
@@ -35,6 +38,7 @@ def generate_from_template(source_csv_list, output_folder, file_name):
     source_csvs = source_csv_list
     source_wells = {}
     source_volumes = {} 
+    source_destinations = {}
     output = ""
   
     # extract data from csvs
@@ -43,12 +47,17 @@ def generate_from_template(source_csv_list, output_folder, file_name):
         df = pd.read_csv(path, encoding='utf-8-sig')
         wells = []
         volumes = []
+        destinations = []
         for each in df["Source"]: 
             wells.append(each)
         for each in df["Volume"]: 
             volumes.append(each)
+        for each in df["Destination"]:
+            each = "A" + (str(each)).strip()
+            destinations.append(each)
         source_wells[loc] = wells
         source_volumes[loc] = volumes
+        source_destinations[loc] = destinations
 
         tips += len(source_wells[loc]) # keep track of number of tips needed
 
@@ -70,7 +79,7 @@ def generate_from_template(source_csv_list, output_folder, file_name):
     # where to write the protocol? # TODO: make this another GUI option
     try: 
         file_to_create = os.path.join(output_folder, file_name)
-        write_output = write_protocol(file_to_create, source_wells, source_volumes)
+        write_output = write_protocol(file_to_create, source_wells, source_volumes, source_destinations)
         output += write_output
     except Error as e:  
         output += f"\nError: Coud not resolve output protocol file path"
@@ -104,7 +113,7 @@ def run(protocol):
     PIPETTE_TYPE = "p20_single_gen2"
     PIPETTE_MOUNT = "right"
     
-    DESTINATION_PLATE_TYPE = "nest_96_wellplate_2ml_deep" #idk what plate you have, I just temp it up here.
+    DESTINATION_PLATE_TYPE = 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap' #idk what plate you have, I just temp it up here.
     DESTINATION_PLATE_SLOT = "1"
     
     SOURCE_PLATE_TYPE = "nest_96_wellplate_100ul_pcr_full_skirt" # same as above.
@@ -174,31 +183,45 @@ def run(protocol):
         source4_volumes = None 
         source5_volumes = None 
 
+        source1_dest = None
+        source2_dest = None
+        source3_dest = None 
+        source4_dest = None 
+        source5_dest = None
+
+        #load the destination plate (a 2ml tuberack in this case).
+        destination_plate = protocol.load_labware(DESTINATION_PLATE_TYPE, DESTINATION_PLATE_SLOT)
+
         # load the source plates and source wells
         if len(source_locs) >= 1: 
             source1 = protocol.load_labware(SOURCE_PLATE_TYPE, source_locs[0])
             source1_wells = [source1.wells_by_name()[well] for well in source_wells[source_locs[0]]]
             source1_volumes = source_volumes[source_locs[0]]   # should be a list already :) 
+            source1_dest = [destination_plate.wells_by_name()[well] for well in source_destinations[source_locs[0]]]
             
             if len(source_locs) >= 2: 
                 source2 = protocol.load_labware(SOURCE_PLATE_TYPE, source_locs[1])
                 source2_wells = [source2.wells_by_name()[well] for well in source_wells[source_locs[1]]]
                 source2_volumes = source_volumes[source_locs[1]]
+                source2_dest = [destination_plate.wells_by_name()[well] for well in source_destinations[source_locs[1]]]
 
                 if len(source_locs) >= 3: 
                     source3 = protocol.load_labware(SOURCE_PLATE_TYPE, source_locs[2])
                     source3_wells = [source3.wells_by_name()[well] for well in source_wells[source_locs[2]]]
                     source3_volumes = source_volumes[source_locs[2]]
+                    source3_dest = [destination_plate.wells_by_name()[well] for well in source_destinations[source_locs[2]]]
 
                     if len(source_locs) >= 4: 
                         source4 = protocol.load_labware(SOURCE_PLATE_TYPE, source_locs[3])
                         source4_wells = [source4.wells_by_name()[well] for well in source_wells[source_locs[3]]]
                         source4_volumes = source_volumes[source_locs[3]]
+                        source4_dest = [destination_plate.wells_by_name()[well] for well in source_destinations[source_locs[3]]]
 
                         if len(source_locs) == 5: 
                             source5 = protocol.load_labware(SOURCE_PLATE_TYPE, source_locs[4])
                             source5_wells = [source5.wells_by_name()[well] for well in source_wells[source_locs[4]]]
                             source5_volumes = source_volumes[source_locs[4]]
+                            source5_dest = [destination_plate.wells_by_name()[well] for well in source_destinations[source_locs[4]]]
 
                         elif len(source_locs) > 5: 
                             print("Error: cannot load more than 5 source plates")
@@ -219,23 +242,32 @@ def run(protocol):
         print(source5)
         print(f"\t{source5_wells}")
 
-        #load the destination plate (a 2ml tuberack in this case).
-        destination_plate = protocol.load_labware(DESTINATION_PLATE_TYPE, DESTINATION_PLATE_SLOT)
+        
         
         #read in the destination wells on the destination plate(tuberack), in this case, just the first well since all volume goes into one well.
         destination_well = destination_plate.wells()[0] #'A1'
 
         #start the transfers, home the robot when transfers are complete
         if source1: 
-            pipette.transfer(source1_volumes, source1_wells, destination_well, blowout=False, new_tip="always")
+            for i in range(len(source1_wells)): 
+                pipette.transfer(source1_volumes[i], source1_wells[i], source1_dest[i], blowout=False, new_tip='always') 
+            # pipette.transfer(source1_volumes, source1_wells, destination_well, blowout=False, new_tip="always")
         if source2: 
-            pipette.transfer(source2_volumes, source2_wells, destination_well, blowout=False, new_tip="always")
+            for i in range(len(source2_wells)): 
+                pipette.transfer(source2_volumes[i], source2_wells[i], source2_dest[i], blowout=False, new_tip='always') 
+            #pipette.transfer(source2_volumes, source2_wells, destination_well, blowout=False, new_tip="always")
         if source3: 
-            pipette.transfer(source3_volumes, source3_wells, destination_well, blowout=False, new_tip="always")
+            for i in range(len(source3_wells)): 
+                pipette.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always') 
+            #pipette.transfer(source3_volumes, source3_wells, destination_well, blowout=False, new_tip="always")
         if source4: 
-            pipette.transfer(source4_volumes, source4_wells, destination_well, blowout=False, new_tip="always")
+            for i in range(len(source4_wells)): 
+                pipette.transfer(source4_volumes[i], source4_wells[i], source4_dest[i], blowout=False, new_tip='always') 
+            #pipette.transfer(source4_volumes, source4_wells, destination_well, blowout=False, new_tip="always")
         if source5: 
-            pipette.transfer(source5_volumes, source5_wells, destination_well, blowout=False, new_tip="always")
+            for i in range(len(source5_wells)): 
+                pipette.transfer(source5_volumes[i], source5_wells[i], source5_dest[i], blowout=False, new_tip='always') 
+            #pipette.transfer(source5_volumes, source5_wells, destination_well, blowout=False, new_tip="always")
         pipette.home()
     
     transfer_volumes(source_wells=source_wells, volumes=source_volumes)
