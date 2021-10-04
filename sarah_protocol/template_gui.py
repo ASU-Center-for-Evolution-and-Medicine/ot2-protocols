@@ -11,6 +11,7 @@ root.title("Generate Transfer Protocol")
 # Labels
 csv_filename_label = Label(root, text="CSV FILENAME")
 deck_location_label = Label(root, text="DECK LOCATION")
+plate_type_label = Label(root, text="PLATE TYPE")
 
 source1_label = Label(root, text="Source 1: ")
 source2_label = Label(root, text="Source 2: ")
@@ -56,6 +57,8 @@ drop3 = OptionMenu(root, drop3_loc, None,2,3,4,5,6)
 drop4 = OptionMenu(root, drop4_loc, None,2,3,4,5,6)
 drop5 = OptionMenu(root, drop5_loc, None,2,3,4,5,6)
 
+
+
 # *HELPER METHODS ---------------------------------------------------------------------------
 def browse_csv_click(browse_text_entry): 
     csv_filename = filedialog.askopenfile(title = "Select File",filetypes = (("CSV Files","*.csv"),))
@@ -67,6 +70,11 @@ def browse_folder_click(browse_text_entry):
     browse_text_entry.delete(0,"end")
     browse_text_entry.insert(0, output_folder)
 
+def check_box_click(box1, box2): 
+    if box1: 
+        print("box 1 is checked")
+    if box2:
+        print("box 2 is checked")
 
 # *GENERATE PROTOCOL METHOD -----------------------------------------------------------------
 def generate_button_click(): 
@@ -108,6 +116,14 @@ def generate_button_click():
         is_error = True
         error_text += "\nError: Please use a different deck location for each csv"
 
+    # extract plate types from radio buttons
+    plate_types = []
+    plate_types.append(plate1_type.get())
+    plate_types.append(plate2_type.get())
+    plate_types.append(plate3_type.get())
+    plate_types.append(plate4_type.get())
+    plate_types.append(plate5_type.get())
+
     # extract all csv filenames from text entry boxes
     csv_filenames = []
     num_csv = 0
@@ -137,7 +153,7 @@ def generate_button_click():
 
             if not is_error: 
                 if not deck_locs[i] == "None":
-                    csv_tuple = (deck_locs[i], csv_filenames[i])
+                    csv_tuple = (deck_locs[i], csv_filenames[i], plate_types[i])
                     final_list.append(csv_tuple)   # add to final list if all correct
                 else: 
                     is_error = True
@@ -187,10 +203,38 @@ browse4 = Button(root, text="Browse", command=lambda:browse_csv_click(source4_te
 browse5 = Button(root, text="Browse", command=lambda:browse_csv_click(source5_text_entry))
 write_loc_button = Button(root, text="Browse", command=lambda:browse_folder_click(write_loc_text_entry))
 
+# Check boxes
+plate1_type = StringVar()
+plate2_type = StringVar()
+plate3_type = StringVar()
+plate4_type = StringVar()
+plate5_type = StringVar()
+
+plate1_type.set('full')  # initialize radio buttons
+plate2_type.set('full')
+plate3_type.set('full')
+plate4_type.set('full')
+plate5_type.set('full')
+
+semi1 = Radiobutton(root, text = "semi", variable=plate1_type, value="semi")
+full1 = Radiobutton(root, text = "full", variable=plate1_type, value="full")
+
+semi2 = Radiobutton(root, text = "semi", variable=plate2_type, value="semi")
+full2 = Radiobutton(root, text = "full", variable=plate2_type, value="full")
+
+semi3 = Radiobutton(root, text = "semi", variable=plate3_type, value="semi")
+full3 = Radiobutton(root, text = "full", variable=plate3_type, value="full")
+
+semi4 = Radiobutton(root, text = "semi", variable=plate4_type, value="semi")
+full4 = Radiobutton(root, text = "full", variable=plate4_type, value="full")
+
+semi5 = Radiobutton(root, text = "semi", variable=plate5_type, value="semi")
+full5 = Radiobutton(root, text = "full", variable=plate5_type, value="full")
 
 # Load labels onto root 
 csv_filename_label.grid(row=0, column=1, pady=3)
 deck_location_label.grid(row=0, column=3, padx=3, pady=3)
+plate_type_label.grid(row=0, column=4, columnspan=2)
 
 source1_label.grid(row=1, column=0)
 source2_label.grid(row=2, column=0)
@@ -230,6 +274,18 @@ drop2.grid(row=2, column=3)
 drop3.grid(row=3, column=3)
 drop4.grid(row=4, column=3)
 drop5.grid(row=5, column=3)
+
+# Load check boxes onto root
+semi1.grid(row=1, column=4)
+full1.grid(row=1, column=5, padx=(0,5))
+semi2.grid(row=2, column=4)
+full2.grid(row=2, column=5, padx=(0,5))
+semi3.grid(row=3, column=4)
+full3.grid(row=3, column=5, padx=(0,5))
+semi4.grid(row=4, column=4)
+full4.grid(row=4, column=5, padx=(0,5))
+semi5.grid(row=5, column=4)
+full5.grid(row=5, column=5, padx=(0,5))
 
 root.mainloop()
 
