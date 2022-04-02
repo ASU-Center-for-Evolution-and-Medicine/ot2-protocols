@@ -1,5 +1,9 @@
 from opentrons import protocol_api
 
+"""
+This is the most basic OT-2 protocol example from the Opentrons API2 documentation
+"""
+
 # metadata
 metadata = {
     'protocolName': 'My Protocol',
