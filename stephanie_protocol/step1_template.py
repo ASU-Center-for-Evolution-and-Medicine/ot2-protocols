@@ -13,11 +13,18 @@ step1_tepmplate.py
 
 Description: Generates python protocol file that can be uploaded directly to Opentrons app
 
+Usage:  python step1_template.py -r <number of reactions> -f <output file name> 
+    ex. pyhton step1_template.pt -r 96 -f protocol1.py
+    
+    Note: Make sure you have the opentrons package installed in your termial environment
+
 General Protocol Steps: 
 1.) Make master mix
 2.) Add 15uL master mix to each reaction well
 3.) Run thermocycler 
 4.) Hold thermocycler plate at 4C until human intervention
+
+After the output python file is generated, upload the output file to the Opentrons app to run the protocol
 """
 
 # HELPER METHODS ------------------------------------------------------------------
