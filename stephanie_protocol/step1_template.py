@@ -14,7 +14,7 @@ step1_tepmplate.py
 Description: Generates python protocol file that can be uploaded directly to Opentrons app
 
 Usage:  python step1_template.py -r <number of reactions> -f <output file name> 
-    ex. pyhton step1_template.pt -r 96 -f protocol1.py
+    ex. pyhton step1_template.py -r 96 -f protocol1.py
     
     Note: Make sure you have the opentrons package installed in your termial environment
 
