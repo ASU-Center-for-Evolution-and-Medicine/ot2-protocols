@@ -18,7 +18,8 @@ def write_protocol(
     pipette_300_tip_boxes,
     tip_box_list): 
  
-    current_file_path = "/Users/cstone/Desktop/OT-2/ot2-protocols/sarah_protocol/template.py" # TODO change for windows laptop
+    #current_file_path = "/Users/cstone/Desktop/OT-2/ot2-protocols/sarah_protocol/template.py" # LOCAL TESTING
+    current_file_path = "/Users/stephanie/Desktop/OT2_repo/ot2-protocols/sarah_protocol/template.py"
 
     try: 
         with open(current_file_path, 'r') as open_this: 

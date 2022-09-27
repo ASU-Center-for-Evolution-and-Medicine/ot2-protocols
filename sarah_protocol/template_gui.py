@@ -33,7 +33,8 @@ source4_text_entry = Entry(root, width=75)
 source5_text_entry = Entry(root, width=75)
 
 write_loc_text_entry = Entry(root, width=75)
-write_loc_text_entry.insert(END, '/Users/cstone/Desktop/SarahTest')
+write_loc_text_entry.insert(END, '/Users/stephanie/Desktop/OT2_Protocols')
+write_loc_text_entry.insert(END, '/Users/cstone/Desktop/SarahTest') # LOCAL TESTING
 
 file_name_text_entry = Entry(root, width=75)
 file_name_text_entry.insert(END, "Protocol1")
