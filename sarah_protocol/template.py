@@ -8,9 +8,17 @@ import json
 
 
 # HELPER METHODS ------------------------------------------------------------------
-def write_protocol(protocol_path, wells_dict, volumes_dict, destinations_dict, plate_types_dict): 
-    #current_file_path = os.path.abspath("template.py")   # TODO: For some reason this downs't work on mac 
-    current_file_path = "/Users/cstone/Desktop/OT-2/ot2-protocols/sarah_protocol/template.py"
+def write_protocol(
+    protocol_path, 
+    wells_dict, 
+    volumes_dict, 
+    destinations_dict, 
+    plate_types_dict, 
+    pipette_20_tip_boxes,
+    pipette_300_tip_boxes,
+    tip_box_list): 
+ 
+    current_file_path = "/Users/cstone/Desktop/OT-2/ot2-protocols/sarah_protocol/template.py" # TODO change for windows laptop
 
     try: 
         with open(current_file_path, 'r') as open_this: 
@@ -25,9 +33,38 @@ def write_protocol(protocol_path, wells_dict, volumes_dict, destinations_dict, p
 
                     if contents_this[i].startswith("### TD"):
                         open_that.write(f"\nsource_wells = {str(wells_dict)}")
-                        open_that.write(f"\nsource_volumes = {str(volumes_dict)}\n")
-                        open_that.write(f"\nsource_destinations = {str(destinations_dict)}\n")
+                        open_that.write(f"\nsource_volumes = {str(volumes_dict)}")
+                        open_that.write(f"\nsource_destinations = {str(destinations_dict)}")
                         open_that.write(f"\nsource_plate_types = {str(plate_types_dict)}\n")
+
+                        # write tip rack details (names)
+                        open_that.write(f"\nTIPRACK_TYPE_1 = \"{tip_box_list[0]}\"")
+                        open_that.write(f"\nTIPRACK_TYPE_2 = \"{tip_box_list[1]}\"")
+                        open_that.write(f"\nTIPRACK_TYPE_3 = \"{tip_box_list[2]}\"")
+                        open_that.write(f"\nTIPRACK_TYPE_4 = \"{tip_box_list[3]}\"")
+                        open_that.write(f"\nTIPRACK_TYPE_5 = \"{tip_box_list[4]}\"")
+
+                    if contents_this[i].startswith("### PI"):
+                        # pipette 20uL tipracks
+                        open_that.write("\n        ")
+                        open_that.write("pipette_20_tip_box_list = [")
+                        for i in range(len(pipette_20_tip_boxes)):
+                            if not i == len(pipette_20_tip_boxes) - 1:
+                                open_that.write(f"{pipette_20_tip_boxes[i]}, ")
+                            else: 
+                                open_that.write(f"{pipette_20_tip_boxes[i]}")
+                        open_that.write("]")
+                            
+
+                        # pipette 300uL tipracks
+                        open_that.write("\n        ")
+                        open_that.write("pipette_300_tip_box_list = [")
+                        for i in range(len(pipette_300_tip_boxes)):
+                            if not i == len(pipette_300_tip_boxes) - 1:
+                                open_that.write(f"{pipette_300_tip_boxes[i]}, ")
+                            else: 
+                                open_that.write(f"{pipette_300_tip_boxes[i]}")
+                        open_that.write("]")
 
         return(f"Protocol created = {protocol_path} ")
     except: 
@@ -35,7 +72,7 @@ def write_protocol(protocol_path, wells_dict, volumes_dict, destinations_dict, p
 
 # MAIN METHOD --------------------------------------------------------------------
 
-def generate_from_template(source_csv_list, output_folder, file_name): 
+def generate_from_template(source_csv_list, num_20_tip_boxes, num_300_tip_boxes, output_folder, file_name): 
     source_csvs = source_csv_list
     source_wells = {}
     source_volumes = {} 
@@ -44,7 +81,6 @@ def generate_from_template(source_csv_list, output_folder, file_name):
     output = ""
   
     # extract data from csvs
-    tips = 0
     for loc, path, plate_type in source_csvs:  # this should still work
         df = pd.read_csv(path, encoding='utf-8-sig')
         wells = []
@@ -52,8 +88,8 @@ def generate_from_template(source_csv_list, output_folder, file_name):
         destinations = []
         for each in df["Source"]: 
             wells.append(each)
-        for each in df["Volume"]: 
-            volumes.append(each)
+        for well_volume in df["Volume"]: 
+            volumes.append(well_volume)
         for each in df["Destination"]:
             each = "A" + (str(each)).strip()
             destinations.append(each)
@@ -61,13 +97,25 @@ def generate_from_template(source_csv_list, output_folder, file_name):
         source_volumes[loc] = volumes
         source_destinations[loc] = destinations
         source_plate_types[loc] = plate_type
+    
+    tip_box_list = []
+    availible_boxes= ["tiprack1", "tiprack2", "tiprack3", "tiprack4", "tiprack5"]
+    pipette_20_tip_boxes = []
+    pipette_300_tip_boxes = []
+    for i in range(num_20_tip_boxes): 
+        tip_box_list.append("opentrons_96_tiprack_20ul")
+        pipette_20_tip_boxes.append(availible_boxes[0])
+        availible_boxes = availible_boxes[1:]
+    for i in range(num_300_tip_boxes):
+        tip_box_list.append("opentrons_96_tiprack_300uL")
+        pipette_300_tip_boxes = availible_boxes
+    while len(tip_box_list) < 5:
+        tip_box_list.append("opentrons_96_tiprack_300ul")  # add these as default
 
-        tips += len(source_wells[loc]) # keep track of number of tips needed
-
-    # determine the number of tips needed 
-    num_boxes = int(tips/96)+1 if not tips%96 == 0 else int(tips/96)
-    tip_box_loc = [7,8,9,10,11]
-
+    print(f"pipette 20: {pipette_20_tip_boxes}")
+    print(f"pipette 300: {pipette_300_tip_boxes}")
+    print(f"tip_box_list: {tip_box_list}")
+    
     # add deck layout to output string -----
     # output += "DECK LAYOUT: "
     # output += "1: DESTINATION PLATE"
@@ -82,7 +130,16 @@ def generate_from_template(source_csv_list, output_folder, file_name):
     # where to write the protocol? # TODO: make this another GUI option
     try: 
         file_to_create = os.path.join(output_folder, file_name)
-        write_output = write_protocol(file_to_create, source_wells, source_volumes, source_destinations, source_plate_types)
+        write_output = write_protocol(
+            file_to_create, 
+            source_wells, 
+            source_volumes, 
+            source_destinations, 
+            source_plate_types, 
+            pipette_20_tip_boxes, 
+            pipette_300_tip_boxes, 
+            tip_box_list,
+        )
         output += write_output
     except Error as e:  
         output += f"\nError: Coud not resolve output protocol file path"
@@ -103,28 +160,29 @@ metadata = {
 
 ### end
 
-
 ### TD  <--- DO NOT DELETE THIS
-
 
 ### start
 
+
+
 def run(protocol):
-    
-    #Defining the labware types and locations.
-    
-    PIPETTE_TYPE = "p20_single_gen2"
-    PIPETTE_MOUNT = "right"
-    
+
+    #Definine labware types and locations.
+    PIPETTE_TYPE_1 = "p20_single_gen2"
+    PIPETTE_MOUNT_1 = "right"
+
+    PIPETTE_TYPE_2 = "p300_single_gen2"
+    PIPETTE_MOUNT_2 = "left"
+        
     DESTINATION_PLATE_TYPE = 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap' #idk what plate you have, I just temp it up here.
     DESTINATION_PLATE_SLOT = "1"
-    
+        
     SOURCE_PLATE_TYPE_FULL = "nest_96_wellplate_100ul_pcr_full_skirt" # same as above.
     SOURCE_PLATE_TYPE_SEMI = 'opentrons_24_tuberack_eppendorf_1.5ml_safelock_snapcap'   # TODO: REPLACE WITH NEW PLATE DEF
 
-    # SOURCE_PLATE_SLOT = "4"
-    
-    TIPRACK_TYPE = "opentrons_96_tiprack_20ul"
+    TIPRACK_TYPE_20 = "opentrons_96_tiprack_20ul"
+    TIPRACK_TYPE_300 = "opentrons_96_tiprack_300uL"
     TIPRACK_SLOT1 = 7
     TIPRACK_SLOT2 = 8
     TIPRACK_SLOT3 = 9
@@ -141,34 +199,42 @@ def run(protocol):
     LABWARE_LABEL = LABWARE_DEF.get('metadata', {}).get('displayName', 'test labware')
     LABWARE_DIMENSIONS = LABWARE_DEF.get('wells', {}).get('A1', {}).get('yDimension')
     
-    
     def transfer_volumes(source_wells, volumes):
 
         #load tip racks at all possible locations (don't need to actually use all these tip locations)
-        tiprack1 = protocol.load_labware(TIPRACK_TYPE, TIPRACK_SLOT1)
-        tiprack2 = protocol.load_labware(TIPRACK_TYPE, TIPRACK_SLOT2)
-        tiprack3 = protocol.load_labware(TIPRACK_TYPE, TIPRACK_SLOT3)
-        tiprack4 = protocol.load_labware(TIPRACK_TYPE, TIPRACK_SLOT4)
-        tiprack5 = protocol.load_labware(TIPRACK_TYPE, TIPRACK_SLOT5)
+        tiprack1 = protocol.load_labware(TIPRACK_TYPE_1, TIPRACK_SLOT1)
+        tiprack2 = protocol.load_labware(TIPRACK_TYPE_2, TIPRACK_SLOT2)
+        tiprack3 = protocol.load_labware(TIPRACK_TYPE_3, TIPRACK_SLOT3)
+        tiprack4 = protocol.load_labware(TIPRACK_TYPE_4, TIPRACK_SLOT4)
+        tiprack5 = protocol.load_labware(TIPRACK_TYPE_5, TIPRACK_SLOT5)
+
+### end
+
+### PI   <--- DO NOT DELETE THIS
+
+### start
 
         #load the pipette and point to location
-        pipette = protocol.load_instrument(PIPETTE_TYPE, mount=PIPETTE_MOUNT, tip_racks=[tiprack1, tiprack2, tiprack3, tiprack4, tiprack5])
-        pipette.well_bottom_clearance.aspirate = 0
+        pipette_20uL = protocol.load_instrument(PIPETTE_TYPE_1, mount=PIPETTE_MOUNT_1, tip_racks=pipette_20_tip_box_list)
+        pipette_20uL.well_bottom_clearance.aspirate = 0
 
-        print("PIPETTE TYPE:")
-        print(PIPETTE_TYPE)
-        print("TIP RACKS SLOTS:")
-        print(TIPRACK_SLOT1)
-        print(TIPRACK_SLOT2)
-        print(TIPRACK_SLOT3)
-        print(TIPRACK_SLOT4)
-        print(TIPRACK_SLOT5)
-        print("LOADED TIP RACKS")
-        print(tiprack1)
-        print(tiprack2)
-        print(tiprack3)
-        print(tiprack4)
-        print(tiprack5)
+        pipette_300uL = protocol.load_instrument(PIPETTE_TYPE_2, mount=PIPETTE_MOUNT_2, tip_racks=pipette_300_tip_box_list)
+        pipette_300uL.well_bottom_clearance.aspirate = 0
+
+        # print("PIPETTE TYPE:")
+        # print(PIPETTE_TYPE)
+        # print("TIP RACKS SLOTS:")
+        # print(TIPRACK_SLOT1)
+        # print(TIPRACK_SLOT2)
+        # print(TIPRACK_SLOT3)
+        # print(TIPRACK_SLOT4)
+        # print(TIPRACK_SLOT5)
+        # print("LOADED TIP RACKS")
+        # print(tiprack1)
+        # print(tiprack2)
+        # print(tiprack3)
+        # print(tiprack4)
+        # print(tiprack5)
 
         
         # format arrays of source names and locations
@@ -313,29 +379,46 @@ def run(protocol):
         destination_well = destination_plate.wells()[0] #'A1'
 
         #start the transfers, home the robot when transfers are complete
-        pipette.flow_rate.aspirate = 3
+        pipette_20uL.flow_rate.aspirate = 3
+        pipette_300uL.flow_rate.aspirate = 3
+
         if source1: 
             for i in range(len(source1_wells)): 
-                pipette.transfer(source1_volumes[i], source1_wells[i], source1_dest[i], blowout=False, new_tip='always') 
+                if source1_volumes[i] <= 20: 
+                    pipette_20uL.transfer(source1_volumes[i], source1_wells[i], source1_dest[i], blowout=False, new_tip='always')
+                elif source1_volumes[i] > 20 and source1_volumes[i] <= 300:
+                    pipette_300uL.transfer(source1_volumes[i], source1_wells[i], source1_dest[i], blowout=False, new_tip='always') 
             # pipette.transfer(source1_volumes, source1_wells, destination_well, blowout=False, new_tip="always")
         if source2: 
             for i in range(len(source2_wells)): 
-                pipette.transfer(source2_volumes[i], source2_wells[i], source2_dest[i], blowout=False, new_tip='always') 
+                if source2_volumes[i] <= 20:
+                    pipette_20uL.transfer(source2_volumes[i], source2_wells[i], source2_dest[i], blowout=False, new_tip='always') 
+                elif source2_volumes[i] > 20 and source1_volumes[i] <= 300:
+                    pipette_300uL.transfer(source2_volumes[i], source2_wells[i], source2_dest[i], blowout=False, new_tip='always')
             #pipette.transfer(source2_volumes, source2_wells, destination_well, blowout=False, new_tip="always")
         if source3: 
-            for i in range(len(source3_wells)): 
-                pipette.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always') 
+            for i in range(len(source3_wells)):
+                if source3_volumes[i] <= 20: 
+                    pipette_20uL.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always') 
+                elif source3_volumes[i] > 20 and source1_volumes[i] <= 300:
+                    pipette_300uL.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always')
             #pipette.transfer(source3_volumes, source3_wells, destination_well, blowout=False, new_tip="always")
         if source4: 
             for i in range(len(source4_wells)): 
-                pipette.transfer(source4_volumes[i], source4_wells[i], source4_dest[i], blowout=False, new_tip='always') 
+                if source4_volumes[i] <= 20: 
+                    pipette_20uL.transfer(source4_volumes[i], source4_wells[i], source4_dest[i], blowout=False, new_tip='always') 
+                elif source4_volumes[i] > 20 and source1_volumes[i] <= 300:
+                    pipette_300uL.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always')    
             #pipette.transfer(source4_volumes, source4_wells, destination_well, blowout=False, new_tip="always")
         if source5: 
             for i in range(len(source5_wells)): 
-                pipette.transfer(source5_volumes[i], source5_wells[i], source5_dest[i], blowout=False, new_tip='always') 
+                if source5_volumes[i] <= 20: 
+                    pipette_20uL.transfer(source5_volumes[i], source5_wells[i], source5_dest[i], blowout=False, new_tip='always') 
+                elif source5_volumes[i] > 20 and source1_volumes[i] <= 300:
+                    pipette_300uL.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always')
             #pipette.transfer(source5_volumes, source5_wells, destination_well, blowout=False, new_tip="always")
-        pipette.home()
-    
+        pipette_20uL.home() # no need to home both pipettes
+        
     transfer_volumes(source_wells=source_wells, volumes=source_volumes)
 
 # run(protocol)

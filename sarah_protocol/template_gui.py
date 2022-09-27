@@ -89,7 +89,7 @@ def generate_button_click():
     info_text = ""
     error_text = ""
     deck_text= ""
-    final_list = []
+    final_csv_list = []
 
     # extract deck locations from drop downs
     deck_locs = []
@@ -154,7 +154,7 @@ def generate_button_click():
             if not is_error: 
                 if not deck_locs[i] == "None":
                     csv_tuple = (deck_locs[i], csv_filenames[i], plate_types[i])
-                    final_list.append(csv_tuple)   # add to final list if all correct
+                    final_csv_list.append(csv_tuple)   # add to final list if all correct
                 else: 
                     is_error = True
                     error_text += f"\n Please enter a deck location for Source {i+1}"
@@ -174,18 +174,46 @@ def generate_button_click():
 
     # check that file name provided could be used to create valid file path # TODO: figure out how to do this
     output_file_name = (file_name_text_entry.get()).strip() + str(".py")
-    
+
+    # check that you won't need more tip boxes than there are alloted tip deck locations
+    tips_20 = 0
+    tips_300 = 0
+    for loc, path, plate_type in final_csv_list:
+        df = pd.read_csv(path, encoding='utf-8-sig')
+        volumes = []
+        for well_volume in df["Volume"]: 
+            volumes.append(well_volume)
+            # keep count of how many tips needed (20uL vs 300uL)
+            if well_volume > 0 and well_volume <= 20: 
+                tips_20 += 1
+            elif well_volume > 20 and well_volume <= 300: 
+                tips_300 += 1
+    num_20_tip_boxes = int(tips_20/96)+1 if not tips_20%96 == 0 else int(tips_20/96)
+    num_300_tip_boxes = int(tips_300/96)+1 if not tips_300%96 == 0 else int(tips_300/96)
+    if num_20_tip_boxes + num_300_tip_boxes > 5: 
+        is_error = True
+        error_text += f"\n20uL tip boxes needed: {num_20_tip_boxes}\n300uL tip boxes needed: {num_300_tip_boxes}"
+        error_text += "\nToo many tip boxes required (only 5 deck locations availible)\nPlease try again with one less csv. Run this pool in batches"
+
 
     # Decide whether or not to generate protocol 
     if not is_error: 
-        more_info = generate_from_template(final_list, output_loc, output_file_name)  # generate the protocol
+        # generate the protocol
+        more_info = generate_from_template(
+            final_csv_list, num_20_tip_boxes, 
+            num_300_tip_boxes, 
+            output_loc, 
+            output_file_name
+        )  
 
+        # format display text 
+        deck_text += f"\n20uL tip boxes needed: {num_20_tip_boxes}\n300uL tip boxes needed: {num_300_tip_boxes}\n"
         deck_text += more_info
         output_label["text"] = info_text 
         deck_info_label["text"] = deck_text
 
-        # gather the info about what protocol was created 
     else: 
+        # format display text 
         output_label["text"] = error_text  
         
     # display ouptut label from current click
