@@ -55,7 +55,6 @@ def write_protocol(
                                 open_that.write(f"{pipette_20_tip_boxes[i]}")
                         open_that.write("]")
                             
-
                         # pipette 300uL tipracks
                         open_that.write("\n        ")
                         open_that.write("pipette_300_tip_box_list = [")
@@ -66,7 +65,7 @@ def write_protocol(
                                 open_that.write(f"{pipette_300_tip_boxes[i]}")
                         open_that.write("]")
 
-        return(f"Protocol created = {protocol_path} ")
+        return(f"\nProtocol created = {protocol_path} ")
     except: 
         return(f"Error: Could not write to protocol file\n{current_file_path}\n{protocol_path}")
 
@@ -111,10 +110,6 @@ def generate_from_template(source_csv_list, num_20_tip_boxes, num_300_tip_boxes,
         pipette_300_tip_boxes = availible_boxes
     while len(tip_box_list) < 5:
         tip_box_list.append("opentrons_96_tiprack_300ul")  # add these as default
-
-    print(f"pipette 20: {pipette_20_tip_boxes}")
-    print(f"pipette 300: {pipette_300_tip_boxes}")
-    print(f"tip_box_list: {tip_box_list}")
     
     # add deck layout to output string -----
     # output += "DECK LAYOUT: "
@@ -163,7 +158,6 @@ metadata = {
 ### TD  <--- DO NOT DELETE THIS
 
 ### start
-
 
 
 def run(protocol):
@@ -220,29 +214,11 @@ def run(protocol):
 
         pipette_300uL = protocol.load_instrument(PIPETTE_TYPE_2, mount=PIPETTE_MOUNT_2, tip_racks=pipette_300_tip_box_list)
         pipette_300uL.well_bottom_clearance.aspirate = 0
-
-        # print("PIPETTE TYPE:")
-        # print(PIPETTE_TYPE)
-        # print("TIP RACKS SLOTS:")
-        # print(TIPRACK_SLOT1)
-        # print(TIPRACK_SLOT2)
-        # print(TIPRACK_SLOT3)
-        # print(TIPRACK_SLOT4)
-        # print(TIPRACK_SLOT5)
-        # print("LOADED TIP RACKS")
-        # print(tiprack1)
-        # print(tiprack2)
-        # print(tiprack3)
-        # print(tiprack4)
-        # print(tiprack5)
-
         
         # format arrays of source names and locations
         source_locs = []
         for key in source_wells.keys(): 
             source_locs.append(key)
-        # source_names = source_locs.copy()  # might not need this??
-        # source_names = [f"source{x}" for x in source_names]
 
         source1 = None 
         source2 = None
@@ -279,15 +255,14 @@ def run(protocol):
 
         # load the source plates and source wells
         if len(source_locs) >= 1: 
-            #source1 = protocol.load_labware(SOURCE_PLATE_TYPE, source_locs[0])
             source1_type = source_plate_types[source_locs[0]]
             if source1_type == "semi": 
                 source1 = protocol.load_labware_from_definition(LABWARE_DEF, source_locs[0], LABWARE_LABEL)  #!
-                #source1 = protocol.load_labware(SOURCE_PLATE_TYPE_SEMI, source_locs[0])
             elif source1_type == "full": 
                 source1 = protocol.load_labware(SOURCE_PLATE_TYPE_FULL, source_locs[0])
             else: 
                 print("Cannot load labware - plate 1")
+
             source1_wells = [source1.wells_by_name()[well] for well in source_wells[source_locs[0]]]
             source1_volumes = source_volumes[source_locs[0]]   # should be a list already :) 
             source1_dest = [destination_plate.wells_by_name()[well] for well in source_destinations[source_locs[0]]]
@@ -297,7 +272,6 @@ def run(protocol):
                 source2_type = source_plate_types[source_locs[1]]
                 if source2_type == "semi": 
                     source2 = protocol.load_labware_from_definition(LABWARE_DEF, source_locs[1], LABWARE_LABEL)  #!
-                    #source2 = protocol.load_labware(SOURCE_PLATE_TYPE_SEMI, source_locs[1])
                 elif source2_type == "full": 
                     source2 = protocol.load_labware(SOURCE_PLATE_TYPE_FULL, source_locs[1])
                 else: 
@@ -311,7 +285,6 @@ def run(protocol):
                     source3_type = source_plate_types[source_locs[2]]
                     if source3_type == "semi": 
                         source3 = protocol.load_labware_from_definition(LABWARE_DEF, source_locs[2], LABWARE_LABEL) #!
-                        #source3 = protocol.load_labware(SOURCE_PLATE_TYPE_SEMI, source_locs[2])
                     elif source3_type == "full": 
                         source3 = protocol.load_labware(SOURCE_PLATE_TYPE_FULL, source_locs[2])
                     else: 
@@ -325,7 +298,6 @@ def run(protocol):
                         source4_type = source_plate_types[source_locs[3]]
                         if source4_type == "semi": 
                             source4 = protocol.load_labware_from_definition(LABWARE_DEF, source_locs[3], LABWARE_LABEL)  #!
-                            #source4 = protocol.load_labware(SOURCE_PLATE_TYPE_SEMI, source_locs[3])
                         elif source4_type == "full": 
                             source4 = protocol.load_labware(SOURCE_PLATE_TYPE_FULL, source_locs[3])
                         else: 
@@ -339,7 +311,6 @@ def run(protocol):
                             source5_type = source_plate_types[source_locs[4]]
                             if source5_type == "semi": 
                                 source5 = protocol.load_labware_from_definition(LABWARE_DEF, source_locs[4], LABWARE_LABEL) #!
-                                #source5 = protocol.load_labware(SOURCE_PLATE_TYPE_SEMI, source_locs[4])
                             elif source5_type == "full": 
                                 source5 = protocol.load_labware(SOURCE_PLATE_TYPE_FULL, source_locs[4])
                             else: 
@@ -385,46 +356,102 @@ def run(protocol):
         if source1: 
             for i in range(len(source1_wells)): 
                 if source1_volumes[i] <= 20: 
-                    pipette_20uL.transfer(source1_volumes[i], source1_wells[i], source1_dest[i], blowout=False, new_tip='always')
+                    pipette_20uL.transfer(
+                        source1_volumes[i], 
+                        source1_wells[i], 
+                        source1_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    )
                 elif source1_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(source1_volumes[i], source1_wells[i], source1_dest[i], blowout=False, new_tip='always') 
-            # pipette.transfer(source1_volumes, source1_wells, destination_well, blowout=False, new_tip="always")
+                    pipette_300uL.transfer(
+                        source1_volumes[i], 
+                        source1_wells[i], 
+                        source1_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    ) 
+
         if source2: 
             for i in range(len(source2_wells)): 
                 if source2_volumes[i] <= 20:
-                    pipette_20uL.transfer(source2_volumes[i], source2_wells[i], source2_dest[i], blowout=False, new_tip='always') 
+                    pipette_20uL.transfer(
+                        source2_volumes[i], 
+                        source2_wells[i], 
+                        source2_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    ) 
                 elif source2_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(source2_volumes[i], source2_wells[i], source2_dest[i], blowout=False, new_tip='always')
-            #pipette.transfer(source2_volumes, source2_wells, destination_well, blowout=False, new_tip="always")
+                    pipette_300uL.transfer(
+                        source2_volumes[i], 
+                        source2_wells[i], 
+                        source2_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    )
+           
         if source3: 
             for i in range(len(source3_wells)):
                 if source3_volumes[i] <= 20: 
-                    pipette_20uL.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always') 
+                    pipette_20uL.transfer(
+                        source3_volumes[i], 
+                        source3_wells[i], 
+                        source3_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    ) 
                 elif source3_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always')
-            #pipette.transfer(source3_volumes, source3_wells, destination_well, blowout=False, new_tip="always")
+                    pipette_300uL.transfer(
+                        source3_volumes[i], 
+                        source3_wells[i], 
+                        source3_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    )
+            
         if source4: 
             for i in range(len(source4_wells)): 
                 if source4_volumes[i] <= 20: 
-                    pipette_20uL.transfer(source4_volumes[i], source4_wells[i], source4_dest[i], blowout=False, new_tip='always') 
+                    pipette_20uL.transfer(
+                        source4_volumes[i], 
+                        source4_wells[i], 
+                        source4_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    ) 
                 elif source4_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always')    
-            #pipette.transfer(source4_volumes, source4_wells, destination_well, blowout=False, new_tip="always")
+                    pipette_300uL.transfer(
+                        source3_volumes[i], 
+                        source3_wells[i], 
+                        source3_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    )    
+            
         if source5: 
             for i in range(len(source5_wells)): 
                 if source5_volumes[i] <= 20: 
-                    pipette_20uL.transfer(source5_volumes[i], source5_wells[i], source5_dest[i], blowout=False, new_tip='always') 
+                    pipette_20uL.transfer(
+                        source5_volumes[i], 
+                        source5_wells[i], 
+                        source5_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    ) 
                 elif source5_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(source3_volumes[i], source3_wells[i], source3_dest[i], blowout=False, new_tip='always')
-            #pipette.transfer(source5_volumes, source5_wells, destination_well, blowout=False, new_tip="always")
-        pipette_20uL.home() # no need to home both pipettes
+                    pipette_300uL.transfer(
+                        source3_volumes[i], 
+                        source3_wells[i], 
+                        source3_dest[i], 
+                        blowout=False, 
+                        new_tip='always'
+                    )
+            
+        pipette_20uL.home() 
+        pipette_300uL.home()
         
     transfer_volumes(source_wells=source_wells, volumes=source_volumes)
-
-# run(protocol)
-
-# for line in protocol.commands():
-#     print(line)
 
 ### end
         

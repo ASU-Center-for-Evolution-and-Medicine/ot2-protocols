@@ -192,7 +192,7 @@ def generate_button_click():
     num_300_tip_boxes = int(tips_300/96)+1 if not tips_300%96 == 0 else int(tips_300/96)
     if num_20_tip_boxes + num_300_tip_boxes > 5: 
         is_error = True
-        error_text += f"\n20uL tip boxes needed: {num_20_tip_boxes}\n300uL tip boxes needed: {num_300_tip_boxes}"
+        error_text += f"20uL tip boxes needed: {num_20_tip_boxes}\n300uL tip boxes needed: {num_300_tip_boxes}\n"
         error_text += "\nToo many tip boxes required (only 5 deck locations availible)\nPlease try again with one less csv. Run this pool in batches"
 
 
@@ -207,7 +207,7 @@ def generate_button_click():
         )  
 
         # format display text 
-        deck_text += f"\n20uL tip boxes needed: {num_20_tip_boxes}\n300uL tip boxes needed: {num_300_tip_boxes}\n"
+        deck_text += f"20uL tip boxes needed: {num_20_tip_boxes}\n300uL tip boxes needed: {num_300_tip_boxes}\n"
         deck_text += more_info
         output_label["text"] = info_text 
         deck_info_label["text"] = deck_text
