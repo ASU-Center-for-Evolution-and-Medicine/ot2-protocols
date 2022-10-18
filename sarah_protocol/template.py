@@ -224,7 +224,7 @@ def run(protocol):
         pipette_20uL.well_bottom_clearance.aspirate = 0
 
         pipette_300uL = protocol.load_instrument(PIPETTE_TYPE_2, mount=PIPETTE_MOUNT_2, tip_racks=pipette_300_tip_box_list)
-        pipette_300uL.well_bottom_clearance.aspirate = 0
+        pipette_300uL.well_bottom_clearance.aspirate = 1
         
         # format arrays of source names and locations
         source_locs = []
