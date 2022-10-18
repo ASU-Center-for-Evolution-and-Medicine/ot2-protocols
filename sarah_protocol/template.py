@@ -16,7 +16,8 @@ def write_protocol(
     plate_types_dict, 
     pipette_20_tip_boxes,
     pipette_300_tip_boxes,
-    tip_box_list): 
+    tip_box_list,
+    file_name): 
  
     #current_file_path = "/Users/cstone/Desktop/OT-2/ot2-protocols/sarah_protocol/template.py" # LOCAL TESTING
     current_file_path = "/Users/stephanie/Desktop/OT2_repo/ot2-protocols/sarah_protocol/template.py"
@@ -65,6 +66,10 @@ def write_protocol(
                             else: 
                                 open_that.write(f"{pipette_300_tip_boxes[i]}")
                         open_that.write("]")
+
+                    if contents_this[i].startswith("### PROTOCOL NAME"):
+                        protocol_name = file_name.replace(".py", "")
+                        open_that.write(f"\'protocolName\': \'{protocol_name}\',\n")
 
         return(f"\nProtocol created = {protocol_path} ")
     except: 
@@ -135,6 +140,7 @@ def generate_from_template(source_csv_list, num_20_tip_boxes, num_300_tip_boxes,
             pipette_20_tip_boxes, 
             pipette_300_tip_boxes, 
             tip_box_list,
+            file_name,
         )
         output += write_output
     except Error as e:  
@@ -148,7 +154,11 @@ def generate_from_template(source_csv_list, num_20_tip_boxes, num_300_tip_boxes,
 
 # metadata
 metadata = {
-'protocolName': 'Volume Transfer Protocol',
+### end
+
+### PROTOCOL NAME  <--- DO NOT DELETE THIS
+
+### start
 'author': 'Casey Stone <cstone@anl.gov>',
 'description': 'Simple protocol to transfer a given set of volumes into a tube.',
 'apiLevel': '2.8'

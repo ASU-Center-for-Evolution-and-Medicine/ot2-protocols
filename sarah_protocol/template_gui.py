@@ -201,7 +201,8 @@ def generate_button_click():
     if not is_error: 
         # generate the protocol
         more_info = generate_from_template(
-            final_csv_list, num_20_tip_boxes, 
+            final_csv_list, 
+            num_20_tip_boxes, 
             num_300_tip_boxes, 
             output_loc, 
             output_file_name
