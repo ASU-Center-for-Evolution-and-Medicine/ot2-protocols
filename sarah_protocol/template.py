@@ -221,7 +221,7 @@ def run(protocol):
 
         #load the pipette and point to location
         pipette_20uL = protocol.load_instrument(PIPETTE_TYPE_1, mount=PIPETTE_MOUNT_1, tip_racks=pipette_20_tip_box_list)
-        pipette_20uL.well_bottom_clearance.aspirate = 0
+        pipette_20uL.well_bottom_clearance.aspirate = 0.4
 
         pipette_300uL = protocol.load_instrument(PIPETTE_TYPE_2, mount=PIPETTE_MOUNT_2, tip_racks=pipette_300_tip_box_list)
         pipette_300uL.well_bottom_clearance.aspirate = 1
@@ -265,6 +265,7 @@ def run(protocol):
         destination_plate = protocol.load_labware(DESTINATION_PLATE_TYPE, DESTINATION_PLATE_SLOT)
 
         # load the source plates and source wells
+
         if len(source_locs) >= 1: 
             source1_type = source_plate_types[source_locs[0]]
             if source1_type == "semi": 
@@ -365,6 +366,7 @@ def run(protocol):
         pipette_300uL.flow_rate.aspirate = 3
 
         if source1: 
+            #z_height = 0  # TESTING
             for i in range(len(source1_wells)): 
                 if source1_volumes[i] <= 20: 
                     pipette_20uL.transfer(
@@ -374,6 +376,8 @@ def run(protocol):
                         blowout=False, 
                         new_tip='always'
                     )
+                    #z_height += 0.1  # TESTING
+                    #pipette_20uL.well_bottom_clearance.aspirate = z_height # TESTING
                 elif source1_volumes[i] > 20 and source1_volumes[i] <= 300:
                     pipette_300uL.transfer(
                         source1_volumes[i], 
