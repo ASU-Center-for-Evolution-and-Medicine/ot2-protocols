@@ -49,7 +49,7 @@ class CovidGUI:
 
     #global write_loc_text_entry
     write_loc_text_entry = Entry(root, width=65)
-    write_loc_text_entry.insert(END, '/Users/cstone/Desktop/SarahTest')
+    write_loc_text_entry.insert(END, '/Users/stephanie/Desktop/OT2_Protocols')
 
     #global file_name_text_entry
     file_name_text_entry = Entry(root, width=65)
@@ -543,7 +543,7 @@ class CovidGUI:
         is_error = False
         output_text = ""
 
-        template_path = "/Users/cstone/Desktop/OT-2/ot2-protocols/covid/covid_template.py"  # TODO change this for the other computer!
+        template_path = "/Users/stephanie/Desktop/OT2_repo/ot2-protocols/covid/covid_template.py"  
 
         # TESTING
         print("WRITE PROTOCOL METHOD CALLED")
@@ -645,25 +645,6 @@ class CovidGUI:
 
         if not any_errors: # continue to generating protocol
             pass
-            
-
-
-
-        
-
-        
-
-       
-
-
-
-
-
-
-
-    
-
-
 
 covidGUI = CovidGUI()
 
