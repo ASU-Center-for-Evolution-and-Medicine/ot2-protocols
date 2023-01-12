@@ -369,99 +369,142 @@ def run(protocol):
             #z_height = 0  # TESTING
             for i in range(len(source1_wells)): 
                 if source1_volumes[i] <= 20: 
-                    pipette_20uL.transfer(
-                        source1_volumes[i], 
-                        source1_wells[i], 
-                        source1_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
+                    pipette_20uL.pick_up_tip()
+                    pipette_20uL.aspirate(
+                        source1_volumes[i],
+                        source1_wells[i]
                     )
-                    #z_height += 0.1  # TESTING
-                    #pipette_20uL.well_bottom_clearance.aspirate = z_height # TESTING
+                    pipette_20uL.dispense(
+                        source1_volumes[i],
+                        source1_dest[i]
+                    )
+                    pipette_20uL.blow_out(source1_dest[i])
+                    pipette_20uL.drop_tip()
+                    
                 elif source1_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(
-                        source1_volumes[i], 
-                        source1_wells[i], 
-                        source1_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
-                    ) 
+                    pipette_300uL.pick_up_tip()
+                    pipette_300uL.aspirate(
+                        source1_volumes[i],
+                        source1_wells[i]
+                    )
+                    pipette_300uL.dispense(
+                        source1_volumes[i],
+                        source1_dest[i]
+                    )
+                    pipette_300uL.blow_out(source1_dest[i])
+                    pipette_300uL.drop_tip()
 
         if source2: 
             for i in range(len(source2_wells)): 
                 if source2_volumes[i] <= 20:
-                    pipette_20uL.transfer(
-                        source2_volumes[i], 
-                        source2_wells[i], 
-                        source2_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
-                    ) 
-                elif source2_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(
-                        source2_volumes[i], 
-                        source2_wells[i], 
-                        source2_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
+                    pipette_20uL.pick_up_tip()
+                    pipette_20uL.aspirate(
+                        source2_volumes[i],
+                        source2_wells[i]
                     )
+                    pipette_20uL.dispense(
+                        source2_volumes[i],
+                        source2_dest[i]
+                    )
+                    pipette_20uL.blow_out(source2_dest[i])
+                    pipette_20uL.drop_tip()
+                    
+                elif source2_volumes[i] > 20 and source2_volumes[i] <= 300:
+                    pipette_300uL.pick_up_tip()
+                    pipette_300uL.aspirate(
+                        source2_volumes[i],
+                        source2_wells[i]
+                    )
+                    pipette_300uL.dispense(
+                        source2_volumes[i],
+                        source2_dest[i]
+                    )
+                    pipette_300uL.blow_out(source2_dest[i])
+                    pipette_300uL.drop_tip()
            
         if source3: 
             for i in range(len(source3_wells)):
                 if source3_volumes[i] <= 20: 
-                    pipette_20uL.transfer(
-                        source3_volumes[i], 
-                        source3_wells[i], 
-                        source3_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
-                    ) 
-                elif source3_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(
-                        source3_volumes[i], 
-                        source3_wells[i], 
-                        source3_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
+                    pipette_20uL.pick_up_tip()
+                    pipette_20uL.aspirate(
+                        source3_volumes[i],
+                        source3_wells[i]
                     )
+                    pipette_20uL.dispense(
+                        source3_volumes[i],
+                        source3_dest[i]
+                    )
+                    pipette_20uL.blow_out(source3_dest[i])
+                    pipette_20uL.drop_tip()
+
+                elif source3_volumes[i] > 20 and source3_volumes[i] <= 300:
+                    pipette_300uL.pick_up_tip()
+                    pipette_300uL.aspirate(
+                        source3_volumes[i],
+                        source3_wells[i]
+                    )
+                    pipette_300uL.dispense(
+                        source3_volumes[i],
+                        source3_dest[i]
+                    )
+                    pipette_300uL.blow_out(source3_dest[i])
+                    pipette_300uL.drop_tip()
             
         if source4: 
             for i in range(len(source4_wells)): 
                 if source4_volumes[i] <= 20: 
-                    pipette_20uL.transfer(
-                        source4_volumes[i], 
-                        source4_wells[i], 
-                        source4_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
-                    ) 
-                elif source4_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(
-                        source3_volumes[i], 
-                        source3_wells[i], 
-                        source3_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
-                    )    
+                    pipette_20uL.pick_up_tip()
+                    pipette_20uL.aspirate(
+                        source4_volumes[i],
+                        source4_wells[i]
+                    )
+                    pipette_20uL.dispense(
+                        source4_volumes[i],
+                        source4_dest[i]
+                    )
+                    pipette_20uL.blow_out(source4_dest[i])
+                    pipette_20uL.drop_tip()
+
+                elif source4_volumes[i] > 20 and source4_volumes[i] <= 300:
+                    pipette_300uL.pick_up_tip()
+                    pipette_300uL.aspirate(
+                        source4_volumes[i],
+                        source4_wells[i]
+                    )
+                    pipette_300uL.dispense(
+                        source4_volumes[i],
+                        source4_dest[i]
+                    )
+                    pipette_300uL.blow_out(source4_dest[i])
+                    pipette_300uL.drop_tip()   
             
         if source5: 
             for i in range(len(source5_wells)): 
                 if source5_volumes[i] <= 20: 
-                    pipette_20uL.transfer(
-                        source5_volumes[i], 
-                        source5_wells[i], 
-                        source5_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
-                    ) 
-                elif source5_volumes[i] > 20 and source1_volumes[i] <= 300:
-                    pipette_300uL.transfer(
-                        source3_volumes[i], 
-                        source3_wells[i], 
-                        source3_dest[i], 
-                        blowout=False, 
-                        new_tip='always'
+                    pipette_20uL.pick_up_tip()
+                    pipette_20uL.aspirate(
+                        source5_volumes[i],
+                        source5_wells[i]
                     )
+                    pipette_20uL.dispense(
+                        source5_volumes[i],
+                        source5_dest[i]
+                    )
+                    pipette_20uL.blow_out(source5_dest[i])
+                    pipette_20uL.drop_tip()
+
+                elif source5_volumes[i] > 20 and source5_volumes[i] <= 300:
+                    pipette_300uL.pick_up_tip()
+                    pipette_300uL.aspirate(
+                        source5_volumes[i],
+                        source5_wells[i]
+                    )
+                    pipette_300uL.dispense(
+                        source5_volumes[i],
+                        source5_dest[i]
+                    )
+                    pipette_300uL.blow_out(source5_dest[i])
+                    pipette_300uL.drop_tip()
             
         pipette_20uL.home() 
         pipette_300uL.home()
