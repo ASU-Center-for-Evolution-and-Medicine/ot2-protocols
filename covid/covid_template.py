@@ -52,7 +52,7 @@ def run(protocol):
         #load the pipette and point to location
         # TODO: check that this is consistent with the updated version of the new protocol
         pipette_20uL = protocol.load_instrument(PIPETTE_TYPE_1, mount=PIPETTE_MOUNT_1, tip_racks=[tiprack1, tiprack2, tiprack3])
-        pipette_20uL.well_bottom_clearance.aspirate = 0
+        pipette_20uL.well_bottom_clearance.aspirate = 0.4
         
         # format arrays of source names and locations
         plate1 = None
