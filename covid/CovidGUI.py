@@ -571,7 +571,7 @@ class CovidGUI:
                             # TESTING 
                             print(output_filename)
                             
-                            protocol_name = output_filename.replace(".py", "")
+                            protocol_name = os.path.basename(output_filename).replace(".py", "")
                             open_protocol.write(f"\'protocolName\': \'{protocol_name}\',\n")
 
             output_text += f"\nProtocol created: {output_filename}"
