@@ -6,8 +6,13 @@ from opentrons import protocol_api, simulate, execute
 import json
 
 # metadata
+# metadata
 metadata = {
-'protocolName': 'Volume Transfer Protocol',
+### end
+
+### PROTOCOL NAME  <--- DO NOT DELETE THIS
+
+### start
 'author': 'Casey Stone <cstone@anl.gov>',
 'description': 'Simple protocol to transfer a given set of volumes into a tube.',
 'apiLevel': '2.8'
@@ -24,7 +29,7 @@ def run(protocol):
 
     # Define labware types and locations.
     PIPETTE_TYPE_1 = "p20_single_gen2"
-    PIPETTE_MOUNT_1 = "right"
+    PIPETTE_MOUNT_1 = "left"
 
     PLATE_TYPE_FULL = "nest_96_wellplate_100ul_pcr_full_skirt"
     #PLATE_TYPE_SEMI = "nest_96_wellplate_100ul_pcr_full_skirt" #TODO update this with new def from other pooling protocol!

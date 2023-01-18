@@ -566,6 +566,14 @@ class CovidGUI:
                             open_protocol.write(f"\ndest_names = {str(dest_plate_names)}")
                             open_protocol.write(f"\ndest_wells = {str(dest_plate_wells)}\n")
 
+                        if template_contents[i].startswith("### PROTOCOL NAME"):
+
+                            # TESTING 
+                            print(output_filename)
+                            
+                            protocol_name = output_filename.replace(".py", "")
+                            open_protocol.write(f"\'protocolName\': \'{protocol_name}\',\n")
+
             output_text += f"\nProtocol created: {output_filename}"
 
         except: 
