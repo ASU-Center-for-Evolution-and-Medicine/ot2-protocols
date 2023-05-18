@@ -473,38 +473,57 @@ class CovidGUI:
             df = pd.read_csv(input_csv_filename, encoding='utf-8-sig')
 
             # collect data frame contents into lists
-            for source_name in df["Original Plate Number"]: 
-                source_name = str(source_name)
-                source_plate_names.append(source_name)
-                if not source_name.strip() in plates_dict: 
-                    is_error = True
-                    output_text += "\nERROR: input csv source plate names do not match user input"
-                    break # so only one of these error messages appears
+            try: 
+                for source_name in df["Original Plate Number"]: 
+                    source_name = str(source_name)
+                    source_plate_names.append(source_name)
+                    if not source_name.strip() in plates_dict: 
+                        is_error = True
+                        output_text += "\nERROR: input csv source plate names do not match user input"
+                        break # so only one of these error messages appears
+            except KeyError as e:
+                is_error = True
+                output_text += "'Original Plate Number' column cannot be parsed. Check for typos in csv.\n"
 
-            for source_well in df["Original Well Number"]: 
-                source_plate_wells.append(source_well)
+            try: 
+                for source_well in df["Original Well Number"]: 
+                    source_plate_wells.append(source_well)
+            except KeyError as e: 
+                is_error = True
+                output_text += "'Original Well Number' column cannot be parsed. Check for typos in csv.\n"
 
-            for volume in df["Volume Needed (ul)"]: 
-                transf_volumes.append(volume)
-                if not (volume <= 20 and volume >= 0): 
-                    is_error = True
-                    output_text += "\nError: Transfer volumes must be between 0 and 20 inclusive"
-                    break # so ony one of these error messages appears
+            try: 
+                for volume in df["Volume Needed (ul)"]: 
+                    transf_volumes.append(volume)
+                    if not (volume <= 20 and volume >= 0): 
+                        is_error = True
+                        output_text += "\nError: Transfer volumes must be between 0 and 20 inclusive"
+                        break # so ony one of these error messages appears
+            except KeyError as e: 
+                is_error = True
+                output_text += "'Volume Needed (ul)' column cannot be parsed. Check for typos in csv.\n"
 
-            for dest_name in df["New Plate Number"]: 
-                dest_plate_names.append(dest_name)
-                if not dest_name.strip() in plates_dict: 
-                    is_error = True
-                    output_text += "\nERROR: input csv destination plate names do not match user input"
-                    break # so only one of these error messages appears
 
-            for dest_well in df["New Well Number"]: 
-                dest_plate_wells.append(dest_well)
+            try: 
+                for dest_name in df["New Plate Number"]: 
+                    dest_plate_names.append(dest_name)
+                    if not dest_name.strip() in plates_dict: 
+                        is_error = True
+                        output_text += "\nERROR: input csv destination plate names do not match user input"
+                        break # so only one of these error messages appears
+            except KeyError as e: 
+                is_error = True
+                output_text += "'New Plate Number' column cannot be parsed. Check for typos in csv.\n"
+
+            try: 
+                for dest_well in df["New Well Number"]: 
+                    dest_plate_wells.append(dest_well)
+            except KeyError as e: 
+                is_error = True
+                output_text += "'New Well Number' column cannot be parsed. Check for typos in csv.\n"
 
             # TODO: Check that all lists are the same length? necessary?
             # TODO: Check that well names are valid? necessary?
-
-
 
         except OSError as e: 
             is_error = True
