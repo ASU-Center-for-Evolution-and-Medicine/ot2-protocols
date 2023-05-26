@@ -45,14 +45,14 @@ class CovidGUI:
     source_plate_name_3_entry = Entry(root, width=15)
 
     #global input_csv_text_entry
-    input_csv_text_entry = Entry(root, width=65)
+    input_csv_text_entry = Entry(root, width=80)
 
     #global write_loc_text_entry
-    write_loc_text_entry = Entry(root, width=65)
+    write_loc_text_entry = Entry(root, width=80)
     write_loc_text_entry.insert(END, '/Users/stephanie/Desktop/OT2_Protocols')
 
     #global file_name_text_entry
-    file_name_text_entry = Entry(root, width=65)
+    file_name_text_entry = Entry(root, width=80)
     file_name_text_entry.insert(END, "Protocol1")
 
     # Text Entry Boxes
@@ -94,12 +94,15 @@ class CovidGUI:
 
     source_semi1 = Radiobutton(root, text = "semi", variable=source_plate1_type, value="semi")
     source_full1 = Radiobutton(root, text = "full", variable=source_plate1_type, value="full")
+    source_semi1_ice = Radiobutton(root, text = "semi ON ICE", variable=source_plate1_type, value="semi_ice")
 
     source_semi2 = Radiobutton(root, text = "semi", variable=source_plate2_type, value="semi")
     source_full2 = Radiobutton(root, text = "full", variable=source_plate2_type, value="full")
+    source_semi2_ice = Radiobutton(root, text = "semi ON ICE", variable=source_plate2_type, value="semi_ice")
 
     source_semi3 = Radiobutton(root, text = "semi", variable=source_plate3_type, value="semi")
     source_full3 = Radiobutton(root, text = "full", variable=source_plate3_type, value="full")
+    source_semi3_ice = Radiobutton(root, text = "semi ON ICE", variable=source_plate3_type, value="semi_ice")
 
     # destination radio buttons  
     destination_plate1_type = StringVar() # define variable type
@@ -110,9 +113,11 @@ class CovidGUI:
 
     destination_semi1 = Radiobutton(root, text = "semi", variable=destination_plate1_type, value="semi")
     destination_full1 = Radiobutton(root, text = "full", variable=destination_plate1_type, value="full")
+    destination_semi1_ice = Radiobutton(root, text = "semi ON ICE", variable=destination_plate1_type, value="semi_ice")
 
     destination_semi2 = Radiobutton(root, text = "semi", variable=destination_plate2_type, value="semi")
     destination_full2 = Radiobutton(root, text = "full", variable=destination_plate2_type, value="full")
+    destination_semi2_ice = Radiobutton(root, text = "semi ON ICE", variable=destination_plate2_type, value="semi_ice")
 
     # dividing lines
     separator_vertical = ttk.Separator(root, orient='vertical')
@@ -147,7 +152,7 @@ class CovidGUI:
         # labels 
         self.source_plate_name_label.grid(row=1, column=1)
         self.source_deck_location_label.grid(row=1, column=2)
-        self.source_plate_type_label.grid(row=1, column=3, columnspan=2)
+        self.source_plate_type_label.grid(row=1, column=3, columnspan=3)
 
         self.source1_label.grid(row=2, column=0)
         self.source2_label.grid(row=3, column=0)
@@ -165,56 +170,61 @@ class CovidGUI:
 
         # radio buttons
         self.source_semi1.grid(row=2, column=3)
-        self.source_full1.grid(row=2, column=4, padx=(0,5))
+        self.source_full1.grid(row=2, column=4)
+        self.source_semi1_ice.grid(row=2, column=5, padx=(0,5))
         self.source_semi2.grid(row=3, column=3)
-        self.source_full2.grid(row=3, column=4, padx=(0,5))
+        self.source_full2.grid(row=3, column=4)
+        self.source_semi2_ice.grid(row=3, column=5, padx=(0,5))
         self.source_semi3.grid(row=4, column=3)
-        self.source_full3.grid(row=4, column=4, padx=(0,5))
+        self.source_full3.grid(row=4, column=4)
+        self.source_semi3_ice.grid(row=4, column=5, padx=(0,5))
 
         #* DESTINATION SIDE --------
         # labels
-        self.destination_plate_name_label.grid(row=1, column=7)
-        self.destination_deck_location_label.grid(row=1, column=8)
-        self.destination_plate_type_label.grid(row=1, column=9, columnspan=2)
+        self.destination_plate_name_label.grid(row=1, column=8)
+        self.destination_deck_location_label.grid(row=1, column=9)
+        self.destination_plate_type_label.grid(row=1, column=10, columnspan=3)
 
-        self.destination1_label.grid(row=2, column=6)
-        self.destination2_label.grid(row=3, column=6)
+        self.destination1_label.grid(row=2, column=7)
+        self.destination2_label.grid(row=3, column=7)
 
         # text entry boxes
-        self.destination_plate_name_1_entry.grid(row=2, column=7)
-        self.destination_plate_name_2_entry.grid(row=3, column=7)
+        self.destination_plate_name_1_entry.grid(row=2, column=8)
+        self.destination_plate_name_2_entry.grid(row=3, column=8)
 
         # drop down boxes
-        self.destination_deck_drop1.grid(row=2, column=8)
-        self.destination_deck_drop2.grid(row=3, column=8)
+        self.destination_deck_drop1.grid(row=2, column=9)
+        self.destination_deck_drop2.grid(row=3, column=9)
 
         # radio buttons
-        self.destination_semi1.grid(row=2, column=9)
-        self.destination_full1.grid(row=2, column=10, padx=(0,5))
-        self.destination_semi2.grid(row=3, column=9)
-        self.destination_full2.grid(row=3, column=10, padx=(0,5))
+        self.destination_semi1.grid(row=2, column=10)
+        self.destination_full1.grid(row=2, column=11)
+        self.destination_semi1_ice.grid(row=2, column=12,  padx=(0,5))
+        self.destination_semi2.grid(row=3, column=10)
+        self.destination_full2.grid(row=3, column=11)
+        self.destination_semi2_ice.grid(row=3, column=12,  padx=(0,5))
 
         # OTHER
         # dividing lines
-        self.separator_vertical.grid(row=0, column=5, rowspan=5, sticky=NS)
+        self.separator_vertical.grid(row=0, column=6, rowspan=5, sticky=NS)
         self.separator_horizontal_1.grid(row=5, columnspan=11, sticky=EW, pady=10)
         self.separator_horizontal_2.grid(row=7, columnspan=11, sticky=EW, pady=10)
 
         #* INPUT CSV
         self.input_csv_label.grid(row=6, column=0, columnspan=2)
-        self.input_csv_text_entry.grid(row=6, column=2, columnspan=7)  # don't use self. with global variables
-        self.input_csv_button.grid(row=6, column=9, columnspan=2)
+        self.input_csv_text_entry.grid(row=6, column=2, columnspan=10)  # don't use self. with global variables
+        self.input_csv_button.grid(row=6, column=12, columnspan=1)
 
         #* OUTPUT HANDLING
         self.write_loc_label.grid(row=8, column=0, columnspan=2)
         self.file_name_label.grid(row=9, column=0, columnspan=2)
 
-        self.write_loc_text_entry.grid(row=8, column=2, columnspan=7)# don't use self. with global variables
-        self.file_name_text_entry.grid(row=9, column=2, columnspan=7)# don't use self. with global variables
+        self.write_loc_text_entry.grid(row=8, column=2, columnspan=10)# don't use self. with global variables
+        self.file_name_text_entry.grid(row=9, column=2, columnspan=10)# don't use self. with global variables
 
-        self.write_loc_button.grid(row=8, column=9, columnspan=2)
+        self.write_loc_button.grid(row=8, column=12, columnspan=1)
 
-        self.generate_protocol_button.grid(row=10, column=0, columnspan=11, pady=5) 
+        self.generate_protocol_button.grid(row=10, column=0, columnspan=13, pady=5) 
 
         # display the gui
         self.root.mainloop()
