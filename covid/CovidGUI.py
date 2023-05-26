@@ -88,9 +88,9 @@ class CovidGUI:
     source_plate2_type = StringVar()
     source_plate3_type = StringVar()
 
-    source_plate1_type.set('full')  # initialize radio buttons
-    source_plate2_type.set('full')
-    source_plate3_type.set('full')
+    source_plate1_type.set('semi_ice')  # initialize radio buttons
+    source_plate2_type.set('semi_ice')
+    source_plate3_type.set('semi_ice')
 
     source_semi1 = Radiobutton(root, text = "semi", variable=source_plate1_type, value="semi")
     source_full1 = Radiobutton(root, text = "full", variable=source_plate1_type, value="full")
@@ -108,8 +108,8 @@ class CovidGUI:
     destination_plate1_type = StringVar() # define variable type
     destination_plate2_type = StringVar()
 
-    destination_plate1_type.set('full')  # initialize radio buttons
-    destination_plate2_type.set('full')
+    destination_plate1_type.set('semi_ice')  # initialize radio buttons
+    destination_plate2_type.set('semi_ice')
 
     destination_semi1 = Radiobutton(root, text = "semi", variable=destination_plate1_type, value="semi")
     destination_full1 = Radiobutton(root, text = "full", variable=destination_plate1_type, value="full")
