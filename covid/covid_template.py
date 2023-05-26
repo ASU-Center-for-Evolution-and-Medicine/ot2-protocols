@@ -29,7 +29,7 @@ def run(protocol):
 
     # Define labware types and locations.
     PIPETTE_TYPE_1 = "p20_single_gen2"
-    PIPETTE_MOUNT_1 = "left"
+    PIPETTE_MOUNT_1 = "right"
 
     PLATE_TYPE_FULL = "nest_96_wellplate_100ul_pcr_full_skirt"
     #PLATE_TYPE_SEMI = "nest_96_wellplate_100ul_pcr_full_skirt" #TODO update this with new def from other pooling protocol!
@@ -170,17 +170,39 @@ def run(protocol):
             naming_dict[plate_names[4]] = plate5
 
         # TESTING
+        print("NAMING DICT")  # for some reason this isn't registering
         print(naming_dict)
 
         # START THE TRANSFERS, home the robot when transfers are complete
         pipette_20uL.flow_rate.aspirate = 3  # TODO: think about making this faster
 
+        # pipette_offset = 40
         for i in range(len(source_names)):   # TODO: this should accomplish all the transfers ( test this!)
+            
+            # TEST METHOD, NEEDS WORK
+            # if plates_dict[source_names[i]][1]== "semi_ice": 
+            #     pipette_20uL.well_bottom_clearance.aspirate = pipette_offset
+            # else: 
+            #     pipette_20uL.well_bottom_clearance.aspirate = 0.4
+
+            # pipette_20uL.aspirate(
+            #     transf_volumes[i], naming_dict[source_names[i]].wells(source_wells[i])
+            # )
+        
+            # if plates_dict[dest_names[i]][1]== "semi_ice": 
+            #     pipette_20uL.well_bottom_clearance.aspirate = pipette_offset
+            # else: 
+            #     pipette_20uL.well_bottom_clearance.aspirate = 0.4
+            
+            # pipette_20uL.dispense(
+            #     transf_volumes[i], naming_dict[dest_names[i]].wells(dest_wells[i]),
+            # )
             pipette_20uL.transfer(
                 transf_volumes[i], 
                 naming_dict[source_names[i]].wells(source_wells[i]), 
                 naming_dict[dest_names[i]].wells(dest_wells[i]),
             )
+            
             
         pipette_20uL.home() 
     
