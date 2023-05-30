@@ -1,11 +1,11 @@
 ﻿Sample ID,Volume Needed (ul),Original Plate Number,Original Well Number,New Plate Number,New Well Number
-1,19.56,1,A4,N1,A1
-2,15.34,1,A8,N2,A2
+1,19.1,1,A4,N1,A1
+2,15,1,A8,N2,A2
 3,15,1,B12,N1,A3
-4,20,2,C1,N2,A4
-5,20,2,C5,N1,A5
-6,20,2,D8,N2,A6
+4,15,2,C1,N2,A4
+5,15,2,C5,N1,A5
+6,15,2,D8,N2,A6
 7,15,1,D10,N1,A7
-8,18,1,E11,N2,A8
-9,10,1,F5,N1,A9
-10,12,1,F6,N2,A10
+8,15,1,E11,N2,A8
+9,15,1,F5,N1,A9
+10,15,1,F6,N2,A10
