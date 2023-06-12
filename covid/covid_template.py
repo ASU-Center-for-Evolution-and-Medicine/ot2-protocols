@@ -152,10 +152,14 @@ def run(protocol):
         print(naming_dict)
 
         # START THE TRANSFERS, home the robot when transfers are complete
-        pipette_20uL.flow_rate.aspirate = 3  # TODO: think about making this faster
-        pipette_20uL.slow_rate.dispense = 3
+        # pipette_20uL.flow_rate.aspirate = 3  # TODO: think about making this faster
+        # pipette_20uL.slow_rate.dispense = 3
 
         for i in range(len(source_names)):   # TODO: this should accomplish all the transfers ( test this!)
+
+            # Set pipette speed to slow for aspirate/dispense
+            pipette_20uL.flow_rate.aspirate = 3  # TODO: think about making this faster
+            pipette_20uL.flow_rate.dispense = 3
             
             # extract source and dest plate defs
             source_plate = naming_dict[source_names[i]]
@@ -165,6 +169,11 @@ def run(protocol):
             pipette_20uL.pick_up_tip()
             pipette_20uL.aspirate(transf_volumes[i], source_plate[source_wells[i]])
             pipette_20uL.dispense(transf_volumes[i], dest_plate[dest_wells[i]])
+
+            # Set pipette speed to faster for mixing
+            pipette_20uL.flow_rate.aspirate = 5  
+            pipette_20uL.flow_rate.dispense = 5
+
             pipette_20uL.mix(5, 10)
             pipette_20uL.drop_tip()
             
