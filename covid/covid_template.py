@@ -112,7 +112,7 @@ def run(protocol):
                     
                     if len(plate_names) >= 4: 
                         if plate_types[3] == "semi": 
-                            plate4 = protocol.protocol.load_labware(SEMI_w_ADAPTER_TYPE, plate_locations[3])
+                            plate4 = protocol.load_labware(SEMI_w_ADAPTER_TYPE, plate_locations[3])
                         elif plate_types[3] == "full": 
                             plate4 = protocol.load_labware(PLATE_TYPE_FULL, plate_locations[3])
                         elif plate_types[3] == "semi_ice": 
@@ -156,12 +156,16 @@ def run(protocol):
 
         for i in range(len(source_names)):   # TODO: this should accomplish all the transfers ( test this!)
             
-            pipette_20uL.transfer(
-                transf_volumes[i], 
-                naming_dict[source_names[i]].wells(source_wells[i]), 
-                naming_dict[dest_names[i]].wells(dest_wells[i]),
-            )
-         
+            # extract source and dest plate defs
+            source_plate = naming_dict[source_names[i]]
+            dest_plate = naming_dict[dest_names[i]]
+            
+            # complete transfer with mixing
+            pipette_20uL.pick_up_tip()
+            pipette_20uL.aspirate(transf_volumes[i], source_plate[source_wells[i]])
+            pipette_20uL.dispense(transf_volumes[i], dest_plate[dest_wells[i]])
+            pipette_20uL.mix(5, 10)
+            pipette_20uL.drop_tip()
             
         pipette_20uL.home() 
     
