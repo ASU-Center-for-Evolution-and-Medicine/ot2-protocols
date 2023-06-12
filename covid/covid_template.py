@@ -153,6 +153,7 @@ def run(protocol):
 
         # START THE TRANSFERS, home the robot when transfers are complete
         pipette_20uL.flow_rate.aspirate = 3  # TODO: think about making this faster
+        pipette_20uL.slow_rate.dispense = 3
 
         for i in range(len(source_names)):   # TODO: this should accomplish all the transfers ( test this!)
             
