@@ -572,10 +572,8 @@ class CovidGUI:
         is_error = False
         output_text = ""
 
-        template_path = "/Users/stephanie/Desktop/OT2_repo/ot2-protocols/covid/covid_template.py"  
-
-        # TESTING
-        print("WRITE PROTOCOL METHOD CALLED")
+        #template_path = "/Users/stephanie/Desktop/OT2_repo/ot2-protocols/covid/covid_template.py"  
+        template_path = "/Users/cstone/Documents/RapidPrototypingLab/GitRepos/ot2-protocols/covid/covid_template.py"
         try: 
             with open(template_path, 'r') as open_template: 
                 with open(output_filename, 'w+') as open_protocol: 
@@ -630,10 +628,6 @@ class CovidGUI:
         output_text += plate_output_text
         any_errors = plate_is_error if plate_is_error else any_errors
         
-        # TESTING
-        print("PLATE DICT")
-        print(plates_dict)
-        
         # collect input csv info
         input_csv_filename, input_is_error, input_csv_output_text = self.get_input_csv_input()
         output_text += input_csv_output_text
@@ -649,15 +643,6 @@ class CovidGUI:
         output_text += parse_csv_output_text
         any_errors = parse_csv_is_error if parse_csv_is_error else any_errors
 
-
-        # TESTING
-        print("EXTRACTED VARIABLES")
-        print(source_plate_names)
-        print(source_plate_wells)
-        print(transf_volumes)
-        print(dest_plate_names)
-        print(dest_plate_wells)
-
         # pass variables to write protocol from template method
         write_is_error, write_output_text = self.write_protocol_from_template(
             plates_dict,
@@ -671,12 +656,7 @@ class CovidGUI:
         output_text += write_output_text
         any_errors = write_is_error if write_is_error else any_errors
 
-        
-
-
         # display output message to the user
-        # if output_text == "": 
-        #     output_text += "Protocol Generated"
         if not output_text == "": 
             self.display_output_text(output_text)
 

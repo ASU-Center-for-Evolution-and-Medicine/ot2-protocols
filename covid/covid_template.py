@@ -147,14 +147,7 @@ def run(protocol):
         if plate5: 
             naming_dict[plate_names[4]] = plate5
 
-        # TESTING
-        print("NAMING DICT")  # for some reason this isn't registering
-        print(naming_dict)
-
         # START THE TRANSFERS, home the robot when transfers are complete
-        # pipette_20uL.flow_rate.aspirate = 3  # TODO: think about making this faster
-        # pipette_20uL.slow_rate.dispense = 3
-
         for i in range(len(source_names)):   # TODO: this should accomplish all the transfers ( test this!)
 
             # Set pipette speed to slow for aspirate/dispense
@@ -170,11 +163,12 @@ def run(protocol):
             pipette_20uL.aspirate(transf_volumes[i], source_plate[source_wells[i]])
             pipette_20uL.dispense(transf_volumes[i], dest_plate[dest_wells[i]])
 
-            # Set pipette speed to faster for mixing
-            pipette_20uL.flow_rate.aspirate = 5  
-            pipette_20uL.flow_rate.dispense = 5
+            # Set pipette speed to faster for mixing (mixing no longer included)
+            # pipette_20uL.flow_rate.aspirate = 5  
+            # pipette_20uL.flow_rate.dispense = 5
 
-            pipette_20uL.mix(5, 10)
+            #pipette_20uL.mix(5, 10)   # mixing removed for time sake 
+
             pipette_20uL.drop_tip()
             
         pipette_20uL.home() 
