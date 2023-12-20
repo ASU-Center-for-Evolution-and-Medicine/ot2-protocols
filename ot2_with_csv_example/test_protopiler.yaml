@@ -1,0 +1,35 @@
+resources:
+
+  - location: /Users/cstone/Documents/RapidPrototypingLab/GitRepos/ot2-protocols/ot2_with_csv_example/csv_input/one_plate_excel.xlsx
+    name: protopiler demo
+
+equipment:
+  - name: "corning_96_wellplate_360ul_flat" 
+    location: "3"
+    alias: source
+  - name: "corning_96_wellplate_360ul_flat"
+    location: "6"
+    alias: destination
+  - name: opentrons_96_tiprack_300ul
+    location: "9"
+  - name: p300_single_gen2
+    mount: left
+  
+commands:
+  - name: All transfers from csv
+    source: source:Source Well  # or 3:Source Wells
+    aspirate_clearance: 2
+    destination: destination:Destination Well  # or 6:Destination Well
+    dispense_clearance: 2
+    volume: Volume 
+    # drop_tip: [False, False, True]    # will default to new tip each time if not specified
+
+metadata:
+  protocolName: PCR Prep Full Plate
+  author: Abe astroka@anl.gov
+  description: mixing primers and templates with wells read in from file
+  apiLevel: 2.12
+
+
+# Example usage: 
+# python protopiler.py -c /Users/cstone/Documents/RapidPrototypingLab/GitRepos/ot2-protocols/ot2_with_csv_example/test_protopiler.yaml -po /Users/cstone/Documents/RapidPrototypingLab/GitRepos/ot2-protocols/ot2_with_csv_example/test_output/
